@@ -14,6 +14,11 @@ client = pymongo.MongoClient(params["client_url"])
 db = client[params["db"]]
 # declare the dict to store the data
 data = {}
+@app.route("/")
+def home():
+    # display text on home page
+    return "<h1>Webhook is Working!</h1>"
+
 @app.route("/webhook", methods=["POST", "GET"])
 def webhook():
     req = request.get_json(silent=True, force=True)
