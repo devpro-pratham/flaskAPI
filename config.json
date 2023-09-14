@@ -1,0 +1,6 @@
+{
+    "params": {
+        "client_url": "mongodb+srv://root:XH5BhaTVXNagnJyv@cluster0.optymow.mongodb.net/?retryWrites=true&w=majority",
+        "db": "bot_to_db"
+    }
+}
