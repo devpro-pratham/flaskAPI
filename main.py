@@ -1,14 +1,12 @@
-from urllib import response
 from flask import Flask, request
-from flask_ngrok import run_with_ngrok
 import pymongo
 import json
+import re
 
 with open('config.json') as config_file:
     params = json.load(config_file)["params"]
 
 app = Flask(__name__)
-run_with_ngrok(app)  # Start ngrok when app is run
 
 client = pymongo.MongoClient(params["client_url"])
 db = client[params["db"]]
@@ -35,11 +33,17 @@ def webhook():
         print(data)
 
     if(result.__contains__("What is your Phone Number?")):
-        data["email"] = query
+        # use regex to extract the email id
+        email = re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", query)
+        # add the email id to the dictionary
+        data["email"] = email[0]
         print(data)
 
     if(result.__contains__("Thank You For Your Details")):
-        data["phone"] = query
+        # use regex to extract the phone number
+        phone = re.findall(r"^[2-9]\d{2}-\d{3}-\d{4}$|^(1?(-?\d{3})-?)?(\d{3})(-?\d{4})$", query)
+        # add the phone number to the dictionary
+        data["phone"] = phone[0]
         print(data)
 
     # check if fname, lname, email, phone are present in the dictionary
@@ -52,4 +56,4 @@ def webhook():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
+    app.run()
